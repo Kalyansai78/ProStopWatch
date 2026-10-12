@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="ProStopWatch is a precise stopwatch with lap tracking, performance statistics, and session history."
+    >
+    <meta name="theme-color" content="#FFFFFF">
+
+    <title>ProStopWatch — Precision Time Tracker</title>
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="script.js" defer></script>
+
+</head>
+
+<body>
+
+    <main class="app">
+        <!-- Brand header -->
+        <header class="app-header">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <img src="favicon.svg" alt="" width="48" height="48">
+                </div>
+
+                <div class="brand-text">
+                    <h1>ProStopWatch</h1>
+                    <p>Precision Time Tracker</p>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- Stopwatch display -->
+        <section class="timer-section" aria-label="Stopwatch">
+
+            <div
+                class="status"
+                id="status"
+                role="status"
+                aria-live="polite"
+            >
+                <span class="status-dot" aria-hidden="true"></span>
+                <span class="status-text">READY</span>
+            </div>
+
+            <div
+                class="timer"
+                id="timer"
+                role="timer"
+                aria-label="Elapsed time"
+                aria-live="off"
+            >
+                <span class="minutes">00</span>
+                <span class="separator" aria-hidden="true">:</span>
+                <span class="seconds">00</span>
+                <span class="separator" aria-hidden="true">:</span>
+                <span class="milliseconds">000</span>
+            </div>
+
+            <div class="timer-labels" aria-hidden="true">
+                <span>MIN</span>
+                <span>SEC</span>
+                <span>MS</span>
+            </div>
+
+        </section>
+
+        <!-- Stopwatch controls -->
+        <section class="controls" aria-label="Stopwatch controls">
+
+            <button
+                class="control-button reset"
+                id="resetButton"
+                type="button"
+                title="Reset stopwatch (R)"
+                aria-label="Reset stopwatch"
+            >
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                <span>Reset</span>
+            </button>
+
+            <button
+                class="control-button start"
+                id="startButton"
+                type="button"
+                title="Start or stop stopwatch (Space)"
+                aria-label="Start stopwatch"
+            >
+                <i class="fa-solid fa-play" aria-hidden="true"></i>
+                <span>Start</span>
+            </button>
+
+            <button
+                class="control-button lap"
+                id="lapButton"
+                type="button"
+                title="Record lap (L)"
+                aria-label="Record lap"
+                disabled
+            >
+                <i class="fa-solid fa-flag" aria-hidden="true"></i>
+                <span>Lap</span>
+            </button>
+
+        </section>
+
+        <!-- Keyboard shortcut reference -->
+        <nav class="shortcuts" aria-label="Keyboard shortcuts">
+            <span><kbd>Space</kbd> Start / Stop</span>
+            <span><kbd>L</kbd> Lap</span>
+            <span><kbd>R</kbd> Reset</span>
+        </nav>
+
+        <!-- Recorded lap times -->
+        <section class="laps-section" aria-labelledby="lapHeading">
+
+            <div class="section-header">
+                <div>
+                    <h2 id="lapHeading">Lap Times</h2>
+                    <p>Track your performance</p>
+                </div>
+
+                <span class="lap-count" id="lapCount">0 Laps</span>
+            </div>
+
+            <div class="lap-table-header" aria-hidden="true">
+                <span>Lap</span>
+                <span>Lap Time</span>
+                <span>Total Time</span>
+            </div>
+
+            <ol
+                class="lap-list"
+                id="lapList"
+                aria-label="Recorded lap times"
+            >
+                <li class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>
+                    </div>
+
+                    <h3>No laps recorded</h3>
+                    <p>
+                        Start the stopwatch and press
+                        <strong>Lap</strong> to record your time.
+                    </p>
+                </li>
+            </ol>
+
+        </section>
+
+        <!-- Lap statistics -->
+        <section class="statistics" aria-label="Lap statistics">
+
+            <article class="stat-card">
+                <div class="stat-icon best" aria-hidden="true">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+
+                <div class="stat-info">
+                    <span>Best Lap</span>
+                    <strong id="bestLap">--:---</strong>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon average" aria-hidden="true">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div class="stat-info">
+                    <span>Average Lap</span>
+                    <strong id="averageLap">--:---</strong>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon slowest" aria-hidden="true">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+
+                <div class="stat-info">
+                    <span>Slowest Lap</span>
+                    <strong id="slowestLap">--:---</strong>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Performance summary and chart -->
+        <section
+            class="performance-section"
+            aria-labelledby="performanceHeading"
+        >
+
+            <div class="section-header">
+                <div>
+                    <h2 id="performanceHeading">Performance</h2>
+                    <p>Analyze your stopwatch performance</p>
+                </div>
+
+                <div class="performance-icon" aria-hidden="true">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+            </div>
+
+            <div class="performance-summary">
+                <div class="performance-card">
+                    <span>Total Time</span>
+                    <strong id="totalTime">00:00:000</strong>
+                </div>
+
+                <div class="performance-card">
+                    <span>Total Laps</span>
+                    <strong id="totalLaps">0</strong>
+                </div>
+            </div>
+
+            <div class="trend-section">
+                <div class="trend-header">
+                    <div>
+                        <h3>Lap Performance</h3>
+                        <p>Faster laps indicate improved performance</p>
+                    </div>
+
+                    <span
+                        class="trend-status"
+                        id="trendStatus"
+                        aria-live="polite"
+                    >—</span>
+                </div>
+
+                <div
+                    class="trend-chart"
+                    id="trendChart"
+                    role="img"
+                    aria-label="Lap performance chart. Record laps to view your performance trend."
+                >
+                    <div class="chart-empty">
+                        <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
+                        <span>Record laps to see your performance trend</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Reset confirmation dialog -->
+        <div class="modal-overlay" id="resetModal">
+
+            <section
+                class="reset-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="resetModalTitle"
+                aria-describedby="resetModalMessage"
+            >
+
+                <div class="modal-icon" aria-hidden="true">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </div>
+
+                <h2 id="resetModalTitle">Reset Stopwatch?</h2>
+
+                <p id="resetModalMessage">
+                    Your current time and all recorded laps will be cleared.
+                </p>
+
+                <div class="modal-actions">
+                    <button
+                        class="modal-button cancel"
+                        id="cancelReset"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="modal-button confirm"
+                        id="confirmReset"
+                        type="button"
+                    >
+                        Reset
+                    </button>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- Session-history confirmation dialog -->
+        <div class="modal-overlay" id="historyModal">
+
+            <section
+                class="reset-modal history-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="historyModalTitle"
+                aria-describedby="historyModalMessage"
+            >
+
+                <div class="modal-icon history-modal-icon" aria-hidden="true">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+
+                <h2 id="historyModalTitle">Clear Session History?</h2>
+
+                <p id="historyModalMessage">
+                    This will permanently remove all saved sessions.
+                </p>
+
+                <div class="modal-actions">
+                    <button
+                        class="modal-button cancel"
+                        id="cancelHistoryAction"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="modal-button confirm"
+                        id="confirmHistoryAction"
+                        type="button"
+                    >
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        Clear All
+                    </button>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- Saved stopwatch sessions -->
+        <section class="history-section" aria-labelledby="historyHeading">
+
+            <div class="section-header">
+                <div>
+                    <h2 id="historyHeading">
+                        <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                        Session History
+                    </h2>
+                    <p>Review your previous stopwatch sessions</p>
+                </div>
+
+                <button
+                    class="clear-history-button"
+                    id="clearHistoryButton"
+                    type="button"
+                    aria-label="Clear all saved sessions"
+                >
+                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    <span>Clear</span>
+                </button>
+            </div>
+
+            <div
+                class="history-list"
+                id="historyList"
+                aria-label="Saved stopwatch sessions"
+            >
+                <div class="history-empty">
+                    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                    <span>No saved sessions yet</span>
+                    <small>Complete a session to see it here</small>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+
+        <footer class="app-footer">
+
+            <p>
+                ⏱️ ProStopWatch
+                <span aria-hidden="true">•</span>
+                Built with HTML, CSS and JavaScript
+                <span aria-hidden="true">•</span>
+                ❤️ Made with care
+            </p>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>
