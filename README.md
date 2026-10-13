@@ -67,7 +67,7 @@ The project focuses on a clean user interface, responsive layouts, meaningful pe
 - Git — version control
 - GitHub — source code hosting
 
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```text
 ProStopWatch/
