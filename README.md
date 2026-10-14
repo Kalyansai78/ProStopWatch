@@ -69,7 +69,6 @@ The project focuses on a clean user interface, responsive layouts, meaningful pe
 
 ## 📁 Project Structure
 
-```text
 ProStopWatch/
 │
 ├── screenshots/
@@ -83,3 +82,23 @@ ProStopWatch/
 ├── script.js
 ├── style.css
 └── README.md
+
+## 🚀 Getting Started
+
+1. Clone the repository:
+
+   git clone https://github.com/Kalyansai78/ProStopWatch.git
+
+2. Navigate to the project directory:
+
+   cd ProStopWatch
+
+3. Open `index.html` in your browser.
+
+Alternatively, open the project in Visual Studio Code and use the Live Server extension.
+
+## 👨‍💻 Author
+
+**Kalyan Sai**
+
+GitHub: [@Kalyansai78](https://github.com/Kalyansai78)
